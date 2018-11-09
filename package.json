@@ -1,0 +1,15 @@
+{
+  "name": "readfree-login",
+  "version": "0.0.2",
+  "description": "",
+  "main": "readfree.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "rflogin": "./readfree.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
