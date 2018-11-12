@@ -85,13 +85,7 @@ function login(cookie) {
     });
     res.on("end", () => {
       // console.log("No more data in response.");
-      if (!html) {
-        console.log('登录失败，token过期....');
-        clearCookie();
-      }
-      else {
-        console.log('登录成功');
-      }
+      console.log(body);
     });
   });
   req.end();
