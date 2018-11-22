@@ -71,7 +71,7 @@ function login(cookie) {
     path: "/",
     method: "GET",
     headers: {
-      Cookie: cookie
+      Cookie: cookie.trim()
     }
   };
   const req = http.request(options, res => {
