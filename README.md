@@ -13,7 +13,16 @@ rflogin
 
 3. 登录之后会将登录信息保存在本地`__dirname + 'cookie.txt'`文件中
 
-4. 执行crontab -e进行编辑，crontab 的格式可以参考 crontab 定时任务:
+4. 支持手动修改cookie, 设置cookie时需要拼接好：
+```
+// 在网站登录readfree.me后，获取cookie中的 csrftoken和sessionid两个cookie值
+// eg: csrftoken=aTAMwQnLJbsMLyMCZK1gASzh1gMMJtxMQSov8MMRoF8OyUD3lUaaYivZWO4EfZrj;sessionid=v90rxcxvj7u6xip97jp5eqqi4gw9sblv
+// 该cookie已经被修改过，示例使用
+rflogin --cookie="csrftoken=aTAMwQnLJbsMLyMCZK1gASzh1gMMJtxMQSov8MMRoF8OyUD3lUaaYivZWO4EfZrj;sessionid=v90rxcxvj7u6xip97jp5eqqi4gw9sblv"
+```
+
+
+5. 执行crontab -e进行编辑，crontab 的格式可以参考 crontab 定时任务:
 ```sh
 #每天8：30执行一次rflogin这个命令
 30 8 * * * rflogin

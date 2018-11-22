@@ -39,7 +39,7 @@ function submitForm(formData, cookie) {
     console.log(`STATUS: ${res.statusCode}`);
     console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
     res.setEncoding("utf8");
-    let body = '';
+    let body = "";
     res.on("data", chunk => {
       body += chunk;
     });
@@ -47,9 +47,8 @@ function submitForm(formData, cookie) {
       console.log("No more data in response.");
       if (!body) {
         saveCookie(res);
-        console.log('登录成功')
-      }
-      else {
+        console.log("登录成功");
+      } else {
         console.log(body);
       }
     });
@@ -79,13 +78,13 @@ function login(cookie) {
     console.log(`STATUS: ${res.statusCode}`);
     console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
     res.setEncoding("utf8");
-    let html = '';
+    let html = "";
     res.on("data", chunk => {
       html += chunk;
     });
     res.on("end", () => {
       // console.log("No more data in response.");
-      console.log(body);
+      console.log(html);
     });
   });
   req.end();
@@ -130,7 +129,10 @@ function parseHtml(html) {
   let matched = html.match(imgRegex);
   if (matched) {
     const p = "http://readfree.me" + matched[1];
-    console.log("验证码地址(如果没有自动打开浏览器，其手动复制到浏览器打开)：", p);
+    console.log(
+      "验证码地址(如果没有自动打开浏览器，其手动复制到浏览器打开)：",
+      p
+    );
     var c = require("child_process");
     c.exec("open " + p);
   }
@@ -162,11 +164,15 @@ function saveCookie(res) {
       return temp[0];
     })
     .join(";");
+  writeCookie(cookieStr);
+}
+
+function writeCookie(cookieStr) {
   fs.writeFileSync(__dirname + "/cookie.txt", cookieStr);
 }
 
 function clearCookie() {
-  fs.writeFileSync(__dirname + "/cookie.txt", '');
+  fs.writeFileSync(__dirname + "/cookie.txt", "");
 }
 
 function getLocalCookie() {
@@ -178,17 +184,29 @@ function getLocalCookie() {
   return false;
 }
 
-// 主流程，首先重本地获取cookie，如果没有cookie就需要先登录
-// 如果有cookie就会自动登录
-const cookieStr = getLocalCookie();
-if (cookieStr) {
-  login(cookieStr);
+// 判断参数，是否写入cookie到本地
+const argv = process.argv.slice(2);
+console.log(argv);
+if (!argv.length) {
+  // 主流程，首先重本地获取cookie，如果没有cookie就需要先登录
+  // 如果有cookie就会自动登录
+  const cookieStr = getLocalCookie();
+  if (cookieStr) {
+    login(cookieStr);
+  } else {
+    getForm().then(data => {
+      console.log(data);
+      getPersonInfo().then(formData => {
+        submitForm(Object.assign(formData, data.formData), data.cookie);
+      });
+    });
+  }
 }
 else {
-  getForm().then(data => {
-    console.log(data);
-    getPersonInfo().then(formData => {
-      submitForm(Object.assign(formData, data.formData), data.cookie);
-    });
+  argv.forEach(opt => {
+    if (opt.indexOf('--cookie=') === 0) {
+      console.log('设置cookie: ', opt);
+      writeCookie(opt.replace('--cookie=', '').trim());
+    }
   });
 }
